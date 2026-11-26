@@ -7,14 +7,14 @@
 <p align="center"><em>A memory limit for your browser.</em></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.2-111111?style=flat-square" alt="Version 2.2">
+  <a href="https://github.com/rekanator/ram-limiter/releases/latest"><img src="https://img.shields.io/github/v/release/rekanator/ram-limiter?style=flat-square&color=111111&label=version" alt="Latest version"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-111111?style=flat-square" alt="macOS 14 or newer">
   <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-111111?style=flat-square" alt="Windows 10 or 11">
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
 </p>
 
 <p align="center">
-  <a href="#install">Install</a> &middot; <a href="#the-menu">Menu</a> &middot; <a href="#faq">FAQ</a> &middot; <a href="#privacy">Privacy</a>
+  <a href="https://github.com/rekanator/ram-limiter/releases/latest"><strong>Download</strong></a> &middot; <a href="#install">Install</a> &middot; <a href="#the-menu">Menu</a> &middot; <a href="#faq">FAQ</a> &middot; <a href="#privacy">Privacy</a>
 </p>
 
 A small app (in the Mac menu bar or the Windows system tray) and a browser extension that put a memory limit on your browser. When the browser goes over the limit, the tab you haven't looked at for the longest time is **unloaded**: it stays in the tab bar, and loads again when you click it.
