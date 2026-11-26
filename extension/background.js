@@ -38,7 +38,11 @@ async function status() {
     await schedule(s.interval);
     return s;
   } catch {
-    return null; // menu bar app not running: do nothing
+    // The app isn't running. Forget the short timer, or the alarm would think it is
+    // still counting and checks would never start again.
+    clearTimeout(timer);
+    timer = undefined;
+    return null;
   }
 }
 

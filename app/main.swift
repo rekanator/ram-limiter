@@ -227,6 +227,80 @@ final class BrowserRow: NSView {
     }
 }
 
+/// A clickable menu line that leaves the menu open. It draws its menu item, which
+/// keeps its action so the keyboard still works.
+final class MenuRow: NSView {
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        trackingAreas.forEach(removeTrackingArea)
+        addTrackingArea(NSTrackingArea(rect: .zero, options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect],
+                                       owner: self))
+    }
+    override func mouseEntered(with event: NSEvent) { needsDisplay = true }
+    override func mouseExited(with event: NSEvent) { needsDisplay = true }
+    override func mouseUp(with event: NSEvent) { _ = accessibilityPerformPress() }
+
+    override func isAccessibilityElement() -> Bool { true }
+    override func accessibilityRole() -> NSAccessibility.Role? { .menuItem }
+    override func accessibilityLabel() -> String? {
+        guard let item = enclosingMenuItem else { return nil }
+        let name = item.title.isEmpty ? item.image?.accessibilityDescription ?? "" : item.title
+        return item.state == .on ? "\(name), ticked" : name
+    }
+    override func accessibilityPerformPress() -> Bool {
+        guard let item = enclosingMenuItem, item.isEnabled, let action = item.action else { return false }
+        return NSApp.sendAction(action, to: item.target, from: item)
+    }
+
+    private func text(_ item: NSMenuItem, _ color: NSColor?) -> NSAttributedString {
+        let font = NSFont.menuFont(ofSize: 0)
+        let own = item.attributedTitle?.length ?? 0 > 0
+            ? item.attributedTitle?.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor : nil
+        return NSAttributedString(string: item.title, attributes: [.font: font,
+                                                                   .foregroundColor: color ?? own ?? .labelColor])
+    }
+
+    /// Widens the row to fit. It never narrows, so the menu doesn't jump around.
+    func fit(_ item: NSMenuItem) {
+        let width = 26 + (item.image?.size.width ?? 0) + text(item, nil).size().width + 24
+        if width > frame.width { setFrameSize(NSSize(width: width.rounded(.up), height: 24)) }
+        needsDisplay = true
+    }
+
+    override func draw(_ rect: NSRect) {
+        guard let item = enclosingMenuItem else { return }
+        let lit = item.isHighlighted && item.isEnabled
+        if lit {
+            NSColor.selectedContentBackgroundColor.setFill()
+            NSBezierPath(roundedRect: bounds.insetBy(dx: 5, dy: 0), xRadius: 5, yRadius: 5).fill()
+        }
+        let color: NSColor? = lit ? .selectedMenuItemTextColor : item.isEnabled ? nil : .tertiaryLabelColor
+        func write(_ string: NSAttributedString, _ x: CGFloat) {
+            string.draw(at: NSPoint(x: x, y: (bounds.height - string.size().height) / 2))
+        }
+        if item.state == .on {
+            write(NSAttributedString(string: "✓", attributes: [
+                .font: NSFont.menuFont(ofSize: 0), .foregroundColor: color ?? .labelColor,
+            ]), 11)
+        }
+        var x: CGFloat = 26
+        if let image = item.image {
+            let place = NSRect(x: x, y: (bounds.height - image.size.height) / 2,
+                               width: image.size.width, height: image.size.height)
+            // Template images are drawn in the text colour, as a normal menu item would.
+            let shown = !image.isTemplate ? image : NSImage(size: image.size, flipped: false) { area in
+                image.draw(in: area)
+                (color ?? .labelColor).set()
+                area.fill(using: .sourceAtop)
+                return true
+            }
+            shown.draw(in: place)
+            x = place.maxX
+        }
+        write(text(item, color), x)
+    }
+}
+
 /// Yellow from 80% of the limit, orange from 90%, red from 100%.
 func warningColor(_ fraction: Double) -> NSColor? {
     fraction >= 1 ? .systemRed : fraction >= 0.9 ? .systemOrange : fraction >= 0.8 ? .systemYellow : nil
@@ -350,6 +424,7 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
     let browserLine = NSMenuItem.separator()
     let browserList = NSMenu()
     var rows: [BrowserRow] = []
+    var menuRows: [NSMenuItem] = [] // items drawn by a MenuRow
     var peeked: Browser? // the browser under the pointer in the Browser submenu
     var shownLog: [LogEntry] = []
     let toggle = NSMenuItem(title: "Limiter on", action: #selector(flip), keyEquivalent: "")
@@ -456,7 +531,6 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
             rows.remove(at: index)
         }
         for row in rows { row.chosen = row.browser === selected }
-        if known.count < 2 { item.menu?.cancelTracking() }
         showCurrent()
     }
 
@@ -601,7 +675,7 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
         submenu(browserItem, browserList)
         menu.addItem(browserLine)
         action(toggle)
-        limitItems = choices("Limit", [2.0, 3.0, 4.0, 5.0, 6.0].map { ("\(Int($0)) GB", $0) }, #selector(setLimit))
+        limitItems = choices("Limit", [2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 12.0].map { ("\(Int($0)) GB", $0) }, #selector(setLimit))
         intervalItems = choices("Check intervals", [10, 20, 30, 60].map { (intervalName($0), $0) },
                                 #selector(setCheckInterval))
         graceItems = choices("Grace period", [("Off", 0)] + [2, 3, 5, 10].map { ("\($0) minutes", $0) },
@@ -647,6 +721,8 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         menu.delegate = self
         item.menu = menu
+        // Settings keep the menu open. Log opens a window and Quit quits, so those close it.
+        keepOpen(menu, except: [#selector(showLog), #selector(NSApplication.terminate(_:))])
 
         // Log lines saved by the earlier version have no address.
         if let old = defaults.stringArray(forKey: "log") {
@@ -667,6 +743,20 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
         RunLoop.main.add(timer, forMode: .common)
         let live = Timer(timeInterval: 1, repeats: true) { [weak self] _ in self?.sample() }
         RunLoop.main.add(live, forMode: .common)
+    }
+
+    func keepOpen(_ menu: NSMenu, except: [Selector]) {
+        for entry in menu.items {
+            if let child = entry.submenu {
+                keepOpen(child, except: except)
+            } else if let action = entry.action, !except.contains(action) {
+                let row = MenuRow(frame: NSRect(x: 0, y: 0, width: 120, height: 24))
+                row.autoresizingMask = .width
+                entry.view = row
+                menuRows.append(entry)
+                row.fit(entry)
+            }
+        }
     }
 
     func intervalName(_ seconds: Int) -> String {
@@ -727,6 +817,7 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
         } else {
             link.title = "\(browser.name) extension: \(browser.connected ? "connected" : "not connected")"
         }
+        for entry in menuRows { (entry.view as? MenuRow)?.fit(entry) }
     }
 
     // Coloured near the limit; lighter when off or paused, which also empties drawn icons.
@@ -748,12 +839,10 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
             button.image = nil
             if style == "text" {
                 button.title = "RAM"
-            } else if !browser.enabled {
-                button.title = "RAM off"
-            } else if paused {
-                button.title = "RAM paused"
-            } else {
-                button.title = measuredYet ? String(format: "%.1f/%.0f", used, limit) : "RAM on"
+            } else { // off, paused or no reading yet: an empty reading, greyed out when off or paused
+                let reading = browser.active && measuredYet
+                button.title = (reading ? String(format: "%.1f", used) : "0") + String(format: "/%.0f", limit)
+                    + (paused && browser.enabled ? " ❚❚" : "")
             }
         }
         button.imagePosition = !drawn ? .noImage : button.title.isEmpty ? .imageOnly : .imageLeft
@@ -777,7 +866,7 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
             if ["numbers", "text"].contains(style) {
                 let title = style == "text" ? "RAM"
                     : current.active && measuredYet ? String(format: "%.1f/%.0f", used, current.limitGB)
-                    : String(format: "–/%.0f", current.limitGB)
+                    : String(format: "0/%.0f", current.limitGB)
                 entry.title = title
                 entry.attributedTitle = warningColor(level).map { colored(title, $0) }
             } else {
@@ -827,7 +916,8 @@ final class App: NSObject, NSApplicationDelegate, NSMenuDelegate, NSTextViewDele
                 try SMAppService.mainApp.register()
             }
         } catch {
-            NSAlert(error: error).runModal()
+            item.menu?.cancelTracking() // the message needs the menu out of the way
+            DispatchQueue.main.async { NSAlert(error: error).runModal() }
         }
         refresh()
     }

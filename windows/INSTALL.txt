@@ -1,0 +1,26 @@
+RAM Limiter: how to install (Windows 10 or 11, 64-bit)
+
+1. Unzip the download (right-click it > Extract All). Put the "RAM Limiter"
+   folder somewhere it can stay, such as Documents. Windows and your browser
+   keep using these files, so don't delete or move them.
+2. Open RAMLimiter.exe. Windows may say "Windows protected your PC", because
+   the app isn't signed. Click More info, then Run anyway.
+   If Smart App Control is on, Windows blocks the app and offers no way to
+   run it.
+3. The RAM Limiter icon appears near the clock. It may be hidden under the
+   ^ arrow; drag it onto the taskbar to keep it visible.
+   No icon and no ^ arrow? Right-click an empty part of the taskbar, choose
+   Taskbar settings, open Other system tray icons and switch RAMLimiter on.
+4. In your browser, open the extensions page:
+   opera://extensions   chrome://extensions   edge://extensions
+   brave://extensions   vivaldi://extensions
+5. Turn on Developer mode.
+6. Click Load unpacked and choose the "extension" folder.
+7. Click the RAM Limiter icon near the clock. Within about a minute it should
+   say "extension: connected".
+8. Refresh tabs that were already open.
+
+The limiter starts ON with a 4 GB limit.
+Protection isn't guaranteed: tick important sites under Never unload.
+Unofficial project, not affiliated with any browser maker.
+Only download it from its original GitHub repository.

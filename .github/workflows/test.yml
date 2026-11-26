@@ -13,3 +13,12 @@ jobs:
         run: sh build.sh
       - name: Package the download
         run: sh package.sh
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extension tests
+        run: node test.js
+      - name: Build and package the Windows app
+        run: windows\package.cmd
+        shell: cmd

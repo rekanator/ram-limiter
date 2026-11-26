@@ -4,3 +4,6 @@ dist/
 
 # Mac clutter
 .DS_Store
+
+# Built Windows app
+windows/dist/

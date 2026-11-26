@@ -8,7 +8,7 @@ const load = (file, context) =>
 const settle = () => new Promise((resolve) => setTimeout(resolve, 100));
 
 async function run({ enabled = true, used, interval = 60, grace = 0, never = [], protectTyped = false,
-  typed = [], protectBusy = false, busy = [], left = {}, switches = [], jumps = [], reason }) {
+  typed = [], protectBusy = false, busy = [], left = {}, switches = [], jumps = [], reason, outage }) {
   const tab = (id, lastAccessed, extra = {}) =>
     ({ id, windowId: 1, lastAccessed, title: `Tab ${id}`, url: `https://www.site${id}.com/x`, ...extra });
   const tabs = [
@@ -21,15 +21,17 @@ async function run({ enabled = true, used, interval = 60, grace = 0, never = [],
   const queue = [...jumps];
   const reports = [];
   const timers = [];
+  const pending = []; // what each recorded timer would run
   const store = { left };
   const local = {};
-  let alarm, activated, installed;
+  let alarm, activated, installed, alarmFired;
+  let closed = false, resumed = false;
   const noop = { addListener() {} };
   const context = {
     console, URL, Date, btoa,
     OffscreenCanvas: class { constructor() { throw new Error("no canvas here"); } },
     // The 3s settle wait runs at once; other timers are only recorded.
-    setTimeout: (fn, ms) => ([500, 3000].includes(ms) ? setImmediate(fn) : timers.push(ms)),
+    setTimeout: (fn, ms) => ([500, 3000].includes(ms) ? setImmediate(fn) : (pending.push(fn), timers.push(ms))),
     clearTimeout: () => {},
     fetch: async (url, request) => {
       if (url.endsWith("/jump")) {
@@ -37,6 +39,7 @@ async function run({ enabled = true, used, interval = 60, grace = 0, never = [],
         const jump = queue.shift();
         return { json: async () => jump };
       }
+      if (closed) throw new Error("app closed");
       reports.push(JSON.parse(request.body));
       return { json: async () => ({ enabled, limit: 3, used: used - unloaded.length, interval, grace, never, protectTyped, protectBusy }) };
     },
@@ -60,7 +63,8 @@ async function run({ enabled = true, used, interval = 60, grace = 0, never = [],
         get: async () => structuredClone(store),
         set: async (value) => Object.assign(store, structuredClone(value)),
       } },
-      alarms: { get: async () => alarm, create: async (_, a) => { alarm = a; }, onAlarm: noop },
+      alarms: { get: async () => alarm, create: async (_, a) => { alarm = a; },
+        onAlarm: { addListener: (fn) => { alarmFired = fn; } } },
       runtime: { onInstalled: { addListener: (fn) => { installed = fn; } }, onStartup: noop, getPlatformInfo: async () => {} },
     },
   };
@@ -71,8 +75,17 @@ async function run({ enabled = true, used, interval = 60, grace = 0, never = [],
     await installed({ reason });
     await settle();
   }
+  if (outage) {
+    closed = true; // the short timer runs while the app is closed
+    await pending.at(-1)();
+    closed = false;
+    const before = reports.length;
+    alarmFired();
+    await settle();
+    resumed = reports.length > before;
+  }
   // Copied so results compare equal outside the sandbox.
-  return JSON.parse(JSON.stringify({ unloaded, jumped, reports, timers, store, period: alarm.periodInMinutes }));
+  return JSON.parse(JSON.stringify({ unloaded, jumped, reports, timers, store, resumed, period: alarm.periodInMinutes }));
 }
 
 // typed.js against a fake page.
@@ -116,6 +129,9 @@ function typedPage() {
     assert.strictEqual(result.period, period, `${interval}s alarm`);
     assert.strictEqual(result.timers.at(-1) ?? undefined, timer, `${interval}s timer`);
   }
+
+  assert.ok((await run({ enabled: false, used: 1, interval: 10, outage: true })).resumed,
+    "checks start again after the app was closed");
 
   const clicked = await run({ used: 1, jumps: [
     { url: "https://www.site2.com/x", tab: 2 }, { url: "https://www.site3.com/x", tab: 999 },
