@@ -1,0 +1,20 @@
+RAM Limiter: how to install (macOS 14 or newer)
+
+1. Drag "RAM Limiter" (the app) into your Applications folder.
+2. Put the "extension" folder somewhere it can stay, such as Documents.
+   Your browser keeps using it from there, so don't delete or move it.
+3. Open RAM Limiter from Applications. macOS blocks it the first time,
+   because the app isn't notarized by Apple. Click Done (not Move to Bin).
+4. Open System Settings > Privacy & Security, scroll down, click
+   Open Anyway next to RAM Limiter, and confirm. You only do this once.
+5. In your browser, open the extensions page:
+   opera://extensions   chrome://extensions   edge://extensions
+   brave://extensions   vivaldi://extensions
+6. Turn on Developer mode.
+7. Click Load unpacked and choose the "extension" folder.
+8. Click the RAM Limiter numbers in the menu bar. Within about a minute
+   it should say "extension: connected".
+9. Refresh tabs that were already open.
+
+The limiter starts ON with a 4 GB limit.
+Protection isn't guaranteed: tick important sites under Never unload.

@@ -1,0 +1,6 @@
+# Built app and download
+RAM Limiter.app/
+dist/
+
+# Mac clutter
+.DS_Store
