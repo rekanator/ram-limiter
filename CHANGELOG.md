@@ -1,9 +1,9 @@
 # Changes
 
-## 2.1 update: Windows
+## 2.2
 
 - First Windows version: a tray app for 64-bit Windows 10 and 11, using the same extension.
-- Also supports Opera GX (Windows only).
+- Opera GX support (Mac and Windows).
 - Limit choices of 8, 10 and 12 GB (Mac and Windows).
 - The menu stays open while you change settings (Mac and Windows).
 - Mac: the Numbers icon shows 0/limit, greyed, when the limiter is off or paused, instead of words.

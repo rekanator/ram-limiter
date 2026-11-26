@@ -22,3 +22,9 @@ jobs:
       - name: Build and package the Windows app
         run: windows\package.cmd
         shell: cmd
+      - name: Keep the Windows download
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-download
+          path: dist/RAM-Limiter-*-Windows.zip
+          if-no-files-found: error

@@ -7,7 +7,7 @@
 <p align="center"><em>A memory limit for your browser.</em></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.1-111111?style=flat-square" alt="Version 2.1">
+  <img src="https://img.shields.io/badge/version-2.2-111111?style=flat-square" alt="Version 2.2">
   <img src="https://img.shields.io/badge/macOS-14%2B-111111?style=flat-square" alt="macOS 14 or newer">
   <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-111111?style=flat-square" alt="Windows 10 or 11">
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
@@ -34,7 +34,7 @@ Only download RAM Limiter from its original GitHub repository; copies elsewhere 
 | --- | --- | --- |
 | Chrome | ✅ Tested | ✅ Tested |
 | Opera | ✅ Tested | Untested, should work |
-| Opera GX | Not supported | ✅ Tested |
+| Opera GX | Untested, should work | ✅ Tested |
 | Microsoft Edge | Untested, should work | ✅ Tested |
 | Brave | Untested, should work | Untested, should work |
 | Vivaldi | Untested, should work | Untested, should work |

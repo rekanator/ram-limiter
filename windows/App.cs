@@ -17,8 +17,8 @@ using Microsoft.Win32;
 [assembly: AssemblyProduct("RAM Limiter")]
 [assembly: AssemblyDescription("A memory limit for your browser.")]
 [assembly: AssemblyCopyright("MIT license")]
-[assembly: AssemblyVersion("2.1.0.0")]
-[assembly: AssemblyFileVersion("2.1.0.0")]
+[assembly: AssemblyVersion("2.2.0.0")]
+[assembly: AssemblyFileVersion("2.2.0.0")]
 
 namespace RamLimiter
 {

@@ -158,6 +158,7 @@ final class Browser {
 
 let browsers = [
     Browser("opera", "Opera", "Opera.app", "com.operasoftware.Opera"),
+    Browser("operagx", "Opera GX", "Opera GX.app", "com.operasoftware.OperaGX"),
     Browser("chrome", "Chrome", "Google Chrome.app", "com.google.Chrome"),
     Browser("edge", "Edge", "Microsoft Edge.app", "com.microsoft.edgemac"),
     Browser("brave", "Brave", "Brave Browser.app", "com.brave.Browser"),
