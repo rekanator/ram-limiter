@@ -97,7 +97,7 @@ Then add the `extension` folder from the project, as in step 3 above.
 | Limit | 4 GB |
 | Check intervals | 1 minute |
 | Grace period | 3 minutes |
-| Icon | Numbers |
+| Icon | Nap Chip |
 | Protect unsaved text | On |
 | Protect calls and uploads | On |
 | Start at login | On |
@@ -113,7 +113,7 @@ Then add the `extension` folder from the project, as in step 3 above.
 | **Limit** | 2 to 6 GB. |
 | **Check intervals** | How often memory is checked and tabs are unloaded. Shorter intervals use more CPU; the menu shows an estimate for your Mac once it has measured one. |
 | **Grace period** | How long a tab is safe after you leave it. |
-| **Icon** | Numbers, speedometer, ring, memory chip or the word RAM. |
+| **Icon** | Nap Chip (the logo, which doesn't change), numbers, speedometer, memory chip, ring or the word RAM. |
 | **Never unload** | Tick the sites that must stay loaded. |
 | **Pause** | Stops this browser's limiter for 30 minutes, 1 hour or 2 hours. |
 | **Protect unsaved text** | Keeps tabs where you've typed something you haven't sent. |
@@ -126,10 +126,10 @@ Everything from **Limiter on** to **Protect calls and uploads** is set separatel
 ### Colours
 
 <p align="center">
-  <img src="docs/icons.png" width="480" alt="The speedometer, ring and memory chip icons from empty to over the limit">
+  <img src="docs/icons.png" width="480" alt="The speedometer, memory chip and ring icons from empty to over the limit">
 </p>
 
-The icon turns **yellow** at 80% of your limit, **orange** at 90% and **red** at 100%. It looks faded when the limiter is off or paused. The drawn icons and the numbers show the colours; the word RAM does too.
+The icon turns **yellow** at 80% of your limit, **orange** at 90% and **red** at 100%. It looks faded when the limiter is off or paused. These colours and the live reading apply to every icon except **Nap Chip**, the default, which stays purple and white. Choose another icon to see your usage in the menu bar.
 
 ## Things that aren't obvious
 

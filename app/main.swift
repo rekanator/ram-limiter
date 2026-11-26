@@ -102,8 +102,8 @@ struct Settings: Encodable {
     let grace: Int, never: [String], protectTyped: Bool, protectBusy: Bool
 }
 
-let iconStyles = [("Numbers", "numbers"), ("Speedometer", "speedometer"), ("Ring", "ring"),
-                  ("Memory chip", "chip"), ("RAM text", "text")]
+let iconStyles = [("Nap Chip", "nap"), ("Numbers", "numbers"), ("Speedometer", "speedometer"),
+                  ("Memory chip", "chip"), ("Ring", "ring"), ("RAM text", "text")]
 
 /// One supported browser: its own settings (saved) and what is currently known about it.
 final class Browser {
@@ -135,7 +135,7 @@ final class Browser {
         return [10, 20, 30, 60].contains(seconds) ? seconds : 60
     }
     var grace: Int { self["graceMinutes"] as? Int ?? 3 }
-    var iconStyle: String { self["icon"] as? String ?? "numbers" }
+    var iconStyle: String { self["icon"] as? String ?? "nap" }
     var never: [String] { self["neverSites"] as? [String] ?? [] }
     var protectTyped: Bool { self["protectTyped"] as? Bool ?? true }
     var protectBusy: Bool { self["protectBusy"] as? Bool ?? true }
@@ -232,9 +232,45 @@ func warningColor(_ fraction: Double) -> NSColor? {
     fraction >= 1 ? .systemRed : fraction >= 0.9 ? .systemOrange : fraction >= 0.8 ? .systemYellow : nil
 }
 
+/// The logo for the menu bar: a white chip with a sleeping moon on a purple tile. It never changes.
+func napChip() -> NSImage {
+    let image = NSImage(size: NSSize(width: 22, height: 18), flipped: false) { _ in
+        let scale = NSAffineTransform() // draw on the logo's 100-unit grid
+        scale.translateX(by: 2, yBy: 0)
+        scale.scale(by: 0.18)
+        scale.concat()
+        NSColor(srgbRed: 0x53 / 255, green: 0x4A / 255, blue: 0xB7 / 255, alpha: 1).setFill()
+        NSBezierPath(roundedRect: NSRect(x: 0, y: 0, width: 100, height: 100), xRadius: 22, yRadius: 22).fill()
+        NSColor.white.set()
+        let chip = NSBezierPath(roundedRect: NSRect(x: 24, y: 24, width: 52, height: 52), xRadius: 10, yRadius: 10)
+        chip.lineWidth = 7
+        chip.stroke()
+        let pins = NSBezierPath()
+        for offset in [37.0, 50, 63] {
+            for (from, to) in [(NSPoint(x: offset, y: 88), NSPoint(x: offset, y: 78)),
+                               (NSPoint(x: offset, y: 22), NSPoint(x: offset, y: 12)),
+                               (NSPoint(x: 12, y: offset), NSPoint(x: 22, y: offset)),
+                               (NSPoint(x: 78, y: offset), NSPoint(x: 88, y: offset))] {
+                pins.move(to: from)
+                pins.line(to: to)
+            }
+        }
+        pins.lineWidth = 6
+        pins.lineCapStyle = .round
+        pins.stroke()
+        let moon = CGPath(ellipseIn: CGRect(x: 33, y: 33, width: 34, height: 34), transform: nil)
+            .subtracting(CGPath(ellipseIn: CGRect(x: 45, y: 41, width: 29, height: 29), transform: nil))
+        NSBezierPath(cgPath: moon).fill()
+        return true
+    }
+    image.isTemplate = false
+    return image
+}
+
 /// Drawn icon showing how full the limit is (0 to 1). Below the warning colours it is
 /// a template image that follows the menu bar's colour.
 func gauge(_ style: String, _ fraction: Double) -> NSImage {
+    if style == "nap" { return napChip() }
     let f = CGFloat(min(max(fraction, 0), 1))
     let tint = warningColor(fraction)
     let image = NSImage(size: NSSize(width: 22, height: 18), flipped: false) { _ in
@@ -291,7 +327,7 @@ if let flag = CommandLine.arguments.firstIndex(of: "--icons"), CommandLine.argum
     let sheet = NSImage(size: NSSize(width: 576, height: 216), flipped: false) { rect in
         NSColor.white.setFill()
         rect.fill()
-        for (row, style) in ["speedometer", "ring", "chip"].enumerated() {
+        for (row, style) in ["speedometer", "chip", "ring"].enumerated() {
             for (column, level) in [0, 0.25, 0.5, 0.8, 0.9, 1.1].enumerated() {
                 gauge(style, level).draw(in: NSRect(x: column * 96 + 4, y: (2 - row) * 72, width: 88, height: 72))
             }

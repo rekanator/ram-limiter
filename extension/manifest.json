@@ -4,6 +4,7 @@
   "version": "2.1",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWXePvm1ikKn3L90mjPQHgOX7e4ltSt1G16HoeokD5FSYSVjPeH7R6uJEtLCaz3rLPbbhUDSv9hKffVUYI01T7pujFY3NTnICZBvWYsRCJ+zBB8sLQBJB/Ow832MJVK8fZK56Iu4A0NNuPp/dHO3I5nscJhSoJ2Eq7LT2dgJMD0U7X40f7u5uXqBRv0WYJ3QCAkTUrUqFXKBTO/SgKUxMjy/Q8MN3neoYGiz6CLnG2H5+K6XbrHVc8iS0NR9m98S3c63t0BS7VuWiMWEiWe93Zxzmz9BFYLU4gtYSZuWDU1WjRP3MfWtXUTI2gKbgEsgQas68qotWFlMHHXuo3woowIDAQAB",
   "description": "Unloads the tabs you haven't viewed for the longest when your browser goes over your limit.",
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" },
   "permissions": ["alarms", "favicon", "scripting", "storage", "tabs"],
   "host_permissions": ["<all_urls>"],
   "background": { "service_worker": "background.js" },

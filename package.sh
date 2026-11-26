@@ -7,7 +7,8 @@ version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" app/Inf
 out="dist/RAM Limiter"
 app="$out/RAM Limiter.app"
 rm -rf dist
-mkdir -p "$app/Contents/MacOS"
+mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
+cp app/AppIcon.icns "$app/Contents/Resources/"
 cp app/Info.plist "$app/Contents/Info.plist"
 for arch in arm64 x86_64; do
   swiftc -O -target "$arch-apple-macosx14.0" app/main.swift -o "dist/$arch"

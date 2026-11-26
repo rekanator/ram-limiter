@@ -12,7 +12,7 @@ RAM Limiter: how to install (macOS 14 or newer)
    brave://extensions   vivaldi://extensions
 6. Turn on Developer mode.
 7. Click Load unpacked and choose the "extension" folder.
-8. Click the RAM Limiter numbers in the menu bar. Within about a minute
+8. Click the purple RAM Limiter icon in the menu bar. Within about a minute
    it should say "extension: connected".
 9. Refresh tabs that were already open.
 
