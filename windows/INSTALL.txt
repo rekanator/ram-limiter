@@ -12,7 +12,7 @@ RAM Limiter: how to install (Windows 10 or 11, 64-bit)
    No icon and no ^ arrow? Right-click an empty part of the taskbar, choose
    Taskbar settings, open Other system tray icons and switch RAMLimiter on.
 4. In your browser, open the extensions page:
-   opera://extensions   chrome://extensions   edge://extensions
+   opera://extensions (also Opera GX)   chrome://extensions   edge://extensions
    brave://extensions   vivaldi://extensions
 5. Turn on Developer mode.
 6. Click Load unpacked and choose the "extension" folder.

@@ -6,7 +6,7 @@ const TYPED_TIMEOUT_MS = 2000;
 
 let running = false;
 let timer; // only used for intervals shorter than the alarm minimum
-let unloaded = []; // not yet sent to the menu bar app's log
+let unloaded = []; // not yet sent to the app's log
 let tracking = Promise.resolve();
 
 // "mail.google.com" for web pages, "" for anything else.
@@ -19,7 +19,7 @@ function site(tab) {
   }
 }
 
-// Reports to the menu bar app (on this Mac only) and gets the settings back.
+// Reports to the app (on this computer only) and gets the settings back.
 async function status() {
   try {
     const tabs = await chrome.tabs.query({});

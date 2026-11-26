@@ -8,7 +8,7 @@ RAM Limiter: how to install (macOS 14 or newer)
 4. Open System Settings > Privacy & Security, scroll down, click
    Open Anyway next to RAM Limiter, and confirm. You only do this once.
 5. In your browser, open the extensions page:
-   opera://extensions   chrome://extensions   edge://extensions
+   opera://extensions (also Opera GX)   chrome://extensions   edge://extensions
    brave://extensions   vivaldi://extensions
 6. Turn on Developer mode.
 7. Click Load unpacked and choose the "extension" folder.

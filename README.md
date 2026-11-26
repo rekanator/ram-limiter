@@ -54,38 +54,29 @@ Pick the download for your system from the [latest release](../../releases/lates
 | Mac | `RAM-Limiter-<version>.zip` |
 | Windows | `RAM-Limiter-<version>-Windows.zip` |
 
+### Mac
+
+1. Download the Mac file, `RAM-Limiter-<version>.zip` (not the one ending in -Windows), and unzip it. You get a **RAM Limiter** folder.
+2. Drag the **RAM Limiter** app into your **Applications** folder.
+3. Move the **extension** folder somewhere it can stay, such as **Documents**. Your browser keeps using it from there, so don't delete or move it.
+4. Open **RAM Limiter** from Applications. macOS blocks it the first time, because it isn't notarized by Apple (that needs a paid developer account). When the warning appears, click **Done**, not **Move to Bin**.
+5. Open **System Settings → Privacy & Security** and scroll down. Next to the message about RAM Limiter, click **Open Anyway**, then confirm. You only do this once.
+6. The app appears in the menu bar at the top of the screen. It has no Dock icon.
+7. [Add the extension to your browser](#add-the-extension-to-your-browser).
+
 ### Windows
 
 1. Download the file ending in **-Windows.zip**, right-click it and choose **Extract All**.
-2. Put the **RAM Limiter** folder somewhere it can stay, such as **Documents**. Windows and your browser keep using it from there.
+2. Put the **RAM Limiter** folder somewhere it can stay, such as **Documents**. Windows and your browser keep using it from there, so don't delete or move it.
 3. Open **RAMLimiter.exe**. Windows may say **Windows protected your PC**, because the app isn't signed. Click **More info**, then **Run anyway**. If **Smart App Control** is on, Windows blocks the app and offers no way to run it.
 4. The icon appears near the clock. It may be hidden under the **^** arrow; drag it onto the taskbar to keep it visible. If you see neither the icon nor the arrow, right-click an empty part of the taskbar, choose **Taskbar settings**, open **Other system tray icons** and switch **RAMLimiter** on.
-5. Add the extension to your browser, as in [step 3](#3-add-the-extension-to-your-browser) below.
+5. [Add the extension to your browser](#add-the-extension-to-your-browser).
 
-Only do this for a copy downloaded from this repository. To build it yourself instead, download this project and double-click `windows\package.cmd`; the result is in the `dist` folder.
+Only allow the app for a copy downloaded from this repository. If you'd rather not, [build it yourself](#build-it-yourself) from the code.
 
-### 1. Get the Mac app
+### Add the extension to your browser
 
-1. Download the Mac file (not the one ending in -Windows) from the [latest release](../../releases/latest): `RAM-Limiter-….zip`.
-2. Unzip it. You get a **RAM Limiter** folder.
-3. Drag the **RAM Limiter** app into your **Applications** folder.
-4. Move the **extension** folder somewhere it can stay, such as **Documents**. Your browser keeps using it from there, so don't delete or move it.
-
-### 2. Open it the first time (Mac)
-
-macOS blocks the app at first, because it isn't notarized by Apple (that needs a paid developer account).
-
-1. Open **RAM Limiter** from Applications. When the warning appears, click **Done**, not **Move to Bin**.
-2. Open **System Settings → Privacy & Security** and scroll down.
-3. Next to the message about RAM Limiter, click **Open Anyway**, then confirm.
-
-You only do this once. The app appears in the menu bar at the top of the screen and has no Dock icon.
-
-Only do this for a copy downloaded from this repository. If you'd rather not, [build it yourself](#build-it-yourself-mac) from the code.
-
-### 3. Add the extension to your browser
-
-1. Open your browser's extensions page: `opera://extensions`, `chrome://extensions`, `edge://extensions`, `brave://extensions` or `vivaldi://extensions`.
+1. Open your browser's extensions page: `opera://extensions` (also for Opera GX), `chrome://extensions`, `edge://extensions`, `brave://extensions` or `vivaldi://extensions`.
 2. Turn on **Developer mode**.
 3. Click **Load unpacked** and choose the **extension** folder.
 4. Click the RAM Limiter icon in the menu bar (Mac) or near the clock (Windows). Within about a minute it should say **extension: connected**.
@@ -93,25 +84,31 @@ Only do this for a copy downloaded from this repository. If you'd rather not, [b
 
 Repeat for each browser you want to limit. If you use several profiles in one browser, add the extension to only one of them.
 
-### Build it yourself (Mac)
+### Build it yourself
 
-Instead of steps 1 and 2:
+Instead of downloading the app, download this project (**Code → Download ZIP**), unzip it, and put the folder somewhere it can stay. Then:
 
-1. Download this project (**Code → Download ZIP**), unzip it, and put the folder somewhere it can stay.
-2. Open **Terminal** and install Apple's command line tools. Skip this if you already have them.
+**Mac**
+
+1. Open **Terminal** and install Apple's command line tools. Skip this if you already have them.
 
    ```sh
    xcode-select --install
    ```
 
-3. Type `cd `, drag the project folder into the Terminal window, and press Return.
-4. Build and open the app:
+2. Type `cd `, drag the project folder into the Terminal window, and press Return.
+3. Build and open the app:
 
    ```sh
    sh build.sh && open "RAM Limiter.app"
    ```
 
-Then add the `extension` folder from the project, as in step 3 above.
+**Windows**
+
+1. Double-click `windows\package.cmd`. It uses the C# compiler that comes with Windows.
+2. The app and extension appear in `dist\windows\RAM Limiter`. Open `RAMLimiter.exe` from there.
+
+Then [add the extension](#add-the-extension-to-your-browser), choosing the project's own `extension` folder.
 
 ## Default settings
 
@@ -155,9 +152,9 @@ Everything from **Limiter on** to **Protect calls and uploads** is set separatel
   <img src="docs/icons.png" width="480" alt="The speedometer, memory chip and ring icons from empty to over the limit">
 </p>
 
-The icon turns **yellow** at 80% of your limit, **orange** at 90% and **red** at 100%. It looks faded when the limiter is off or paused. These colours and the live reading apply to every icon except **Nap Chip**, the default, which stays purple and white. Choose another icon to see your usage in the menu bar or tray.
+The icon turns **yellow** at 80% of your limit, **orange** at 90% and **red** at 100%. It looks faded when the limiter is off or paused. On a Mac, paused also shows **❚❚** beside the icon. These colours and the live reading apply to every icon except **Nap Chip**, the default, which stays purple and white. Choose another icon to see your usage in the menu bar or tray.
 
-On Windows the icon is tiny and can't show text beside it: the **numbers** icon shows only the gigabytes used, and resting the pointer on any icon shows the full reading.
+On Windows the icon is tiny and can't show text beside it: the **numbers** icon shows only the gigabytes used, and resting the pointer on any icon shows the full reading. Paused and off look the same there; the tooltip says which.
 
 ## Things that aren't obvious
 
@@ -221,26 +218,27 @@ Yes, 64-bit Windows 10 and 11. Download the file ending in **-Windows.zip**. See
 
 | Problem | Try this |
 | --- | --- |
-| macOS says it can't verify the app | Follow [Open it the first time](#2-open-it-the-first-time-mac). |
+| macOS says it can't verify the app | Use **Open Anyway**, as in [Mac](#mac) step 5. |
 | Windows says it protected your PC | Click **More info**, then **Run anyway**. See [Windows](#windows). |
+| Can't find the icon on Windows | See [Windows](#windows) step 4. |
 | **Extension: not connected** | Check the app is running, then reload the extension. Wait a minute. |
 | **Error: port 47831 unavailable** | Quit any other copy of the app, then open it again. |
 | Nothing is unloaded | Check the limiter is on, you're over the limit and the tabs aren't protected. |
-| Start at login stopped working | If you moved the app, untick and tick **Start at login**. |
+| Start at login stopped working (Mac) | If you moved the app, untick and tick **Start at login**. On Windows this fixes itself the next time you open the app. |
 
 ## Updating
 
-Quit the app. Download the new version, replace the app in Applications and the contents of your **extension** folder, then open the app and reload the extension in each browser. macOS may ask you to allow the new version again.
+Quit the app first, and finish by reloading RAM Limiter on each browser's extensions page.
 
-If you built it yourself, download the new code into the same folder and run the build command again.
-
-On Windows: quit the app, replace the files in your **RAM Limiter** folder with the new ones, open the app and reload the extension in each browser.
+- **Mac:** replace the app in Applications and the contents of your **extension** folder with the new ones, then open the app. macOS may ask you to allow the new version again.
+- **Windows:** replace the files in your **RAM Limiter** folder with the new ones, then open `RAMLimiter.exe`. Windows may warn you again.
+- **Built it yourself:** download the new code into the same folder and build again.
 
 ## Uninstall
 
 1. Untick **Start at login**, then click **Quit**.
 2. Remove RAM Limiter from each browser's extensions page.
-3. Delete the app and the extension folder.
+3. Delete the app and the extension folder. On Windows, delete the whole **RAM Limiter** folder.
 4. Optional: delete the saved settings and log. On Windows, delete the folder `%AppData%\RAMLimiter`. On a Mac:
 
    ```sh
@@ -249,7 +247,7 @@ On Windows: quit the app, replace the files in your **RAM Limiter** folder with 
 
 ## For developers
 
-`node test.js` runs the extension's tests (needs Node.js). The Mac app is in `app/main.swift`; `sh package.sh` makes its download in `dist/`. The Windows app is in `windows/`; `windows\package.cmd` makes its download in `dist/`, using the C# compiler that comes with Windows. Attach both to a release.
+`node test.js` runs the extension's tests (needs Node.js). The Mac app is in `app/main.swift`; `sh package.sh` makes its download in `dist/`. The Windows app is in `windows/`; `windows\package.cmd` makes its download in `dist/`, using the C# compiler that comes with Windows. Each push builds both on GitHub, and the Windows download is kept with that run. Attach both downloads to a release.
 
 ## License
 
